@@ -15,26 +15,30 @@ class Room{
   //
 
   // USER JOINS ROOM
-  userJoin(id){
-    this.users.push(id);
+  userJoin(socketid){
+    this.users.push(socketid);
     this.updateConnected();
   }
 
   // USER LEAVES ROOM
-  userLeave(id){
+  userLeave(socketid){
     // ITERATES ALL CONNECTED USERS AND FINDS THE ONE LEAVING
     for(let i in this.users){
-      if(this.users[i].socketid ==id){
+      if(this.users[i].socketid == socketid){
         this.users.pop(i)
         break;
       }
     }
+    // DELETES ROOM IF EMPTY OTHERWISE UPDATES
+    if(this.users.length==0)
+    {delete(Room.rooms[this.id]);}
+
     this.updateConnected();
   }
 
   // UPDATES ALL USERS CONNECTED TO ROOM
   updateConnected(){
-    //io.sockets.in(this.id).emit()
+    io.sockets.in(this.id).emit("message", this.users)
   }
 
         //

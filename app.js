@@ -52,6 +52,12 @@ io.on('connection', function(socket){
     Room.userJoin(socket.id);
   })
 
+  // ON ROOM JOINS
+  socket.on('room-join', (roomid)=>{
+    var room = Room.rooms[room]
+  })
+  // ON ROOM LEAVE
+
   // ON DISCONNECT
   socket.on('disconnect', function(){
     var room = connections[socket.id].room
