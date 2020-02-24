@@ -41,22 +41,49 @@ io.on('connection', function(socket){
     user: undefined
   }
 
-  // ON GOOD CONNECTION
-  socket.emit('message',connections)
-
-  // ROOM METHODS
+  //
+  //      ROOM METHODS
+  //
 
   // ON ROOM CREATE
   socket.on('room-create', ()=>{
     var room = new Room();
     Room.userJoin(socket.id);
+    connections[socket.id].room = room.id;
+    socket.emit('response-room-created', room.id)
   })
 
   // ON ROOM JOINS
   socket.on('room-join', (roomid)=>{
     var room = Room.rooms[room]
+
+    if(typeof room==='undefined')
+    {res={status:false, message:"Room does not exist"}}
+
+    else if(room.checkFull())
+    {res={status:false, message:"Room is full"}}
+
+    else
+    {res={status:true, message:"Room joined successfully!"}}
+
+    socket.emit('response-room-joined', res)
   })
+
   // ON ROOM LEAVE
+  socket.on('room-leave', ()=>{
+    var room = connections[socket.id].room;
+    room.userLeave(socket.id);
+  })
+
+  //
+  //      ROOM GETS
+  //
+
+  // GET ROOM LIST
+  socket.on('room-list', ()=>{socket.emit('response-room-list', Room.rooms)})
+
+  // GET USER'S ROOM DETAILS
+  socket.on('room-detail', ()=>{socket.emit('response-room-detail', Room.rooms[connections[socket.id].room])})
 
   // ON DISCONNECT
   socket.on('disconnect', function(){

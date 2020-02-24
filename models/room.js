@@ -29,6 +29,7 @@ class Room{
         break;
       }
     }
+
     // DELETES ROOM IF EMPTY OTHERWISE UPDATES
     if(this.users.length==0)
     {delete(Room.rooms[this.id]);}
@@ -44,6 +45,7 @@ class Room{
         //
         //    HELPER FUNCTIONS
         //
+  checkFull(){return this.users==this.usersmax}
 
   // CREATES A UNIQUE IDENTIFIER FOR ROOM
   static createCode(){
