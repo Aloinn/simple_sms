@@ -5,14 +5,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 
 var ChatSchema = new Schema({
   users : [{type:ObjectId, ref:'User'}],
-  username : {
-    type: String,
-    unique: true,
-    match: [/^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/, 'Please fill a valid '],
-    required: true},
-  password : {
-    type: String,
-  }
+  messages : [{type:ObjectId, ref:'Messages'}],
 })
 
 var Chat = mongoose.model('Chat', ChatSchema);
