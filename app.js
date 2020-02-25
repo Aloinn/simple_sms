@@ -1,7 +1,7 @@
 // DEPENDENCIES
 
 var express = require('express');
-var db = require('./db');
+var db = require('/app/db');
 var app = express();
 var cors = require('cors');
 var http = require('http');
