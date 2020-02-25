@@ -8,6 +8,7 @@ app = {
   chatlist: [],
 }
 
+// MENUS
 var menu_auth = document.getElementById('menu-auth');
 var menu_controls = document.getElementById('menu-controls');
 var menu_main = document.getElementById('menu-main');

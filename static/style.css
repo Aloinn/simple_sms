@@ -74,6 +74,7 @@ h1{
 #btn-gc{
   width: 90%;
 }
+
 input {
     text-align: center;
     font-family: "Montserrat";
@@ -120,6 +121,4 @@ input:focus {outline: none;}
   margin: 0.4rem;
   text-align: left;
 }
-p{
-  margin: 0.4rem;
-}
+p{margin: 0.4rem;}

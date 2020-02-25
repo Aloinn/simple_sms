@@ -7,14 +7,12 @@ var ObjectId = require('mongoose').Types.ObjectId;
 var async = require('async');
 
 
-
 module.exports = function (socket, io) {
 
-  // CREATE A CHAT WITH USER (1-1)
+  // CREATE A 1 to 1 CHAT
   socket.on('chat-start', async (other, users)=>{
-    /* OTHER MAY EITHER BE A SINGLE OTHER SOCKETID OR ARRAY OF SOCKETIDS */
 
-    // CHECK DATABASE TO SEE IF 1-1 CHAT EXISTS
+    // CHECK DATABASE TO SEE IF 1-1 CHAT EXISTS ALREADY
     var chat_id;
     try{
       var my_id = connections[socket.id].id;
@@ -25,17 +23,17 @@ module.exports = function (socket, io) {
       var other_user = await User.findOne({_id:ObjectId(other_id)}).exec();
       var chat_exists = (my_user.single_chat.some(e => String(e.user) === String(other_user._id)));
 
+      // IF EXISTS, FIND EXISTING CHAT AND LOAD
       if(chat_exists){
-        // FIND EXISTING CHAT AND LOAD
         for(var chat of my_user.single_chat){
           if(String(chat.user)==String(other_user._id)){
             chat_id = chat.chat._id;
             break;
           }
         }
-      }else{
 
-        // CREATE NEW ENTRY FOR CONNECTIONS
+      // CREATE NEW ENTRY FOR CONNECTIONS
+      }else{
         var chat = await Chat.create({
           users: [
             ObjectId(my_id),
@@ -43,7 +41,7 @@ module.exports = function (socket, io) {
           ], messages: []
         })
 
-        // PUSH THE SINGLE CHAT FOR BOTH USERS
+        // ADDS NEW ENTRY FOR SINGLE CHAT
         await User.pushField(my_id, 'single_chat', {user: ObjectId(other_id), chat: ObjectId(chat._id)})
 
         // IF NOT SAME USER, UPDATE OTHER USER
@@ -55,19 +53,17 @@ module.exports = function (socket, io) {
     }catch(err){console.log(err)}
 
     // IF ROOM WITH CORRESPONDING MONGOOSE OBJECT EXISTs
-    // 1-1 CHATS
-    if(users<=2){
-      var room = Room.roomExists(chat_id);
+    var room = Room.roomExists(chat_id);
 
-      // IF ROOM CURRENTLY EXISTS
-      if(room){
-        userReconnect(socket.id,room,true)
-      } else {
-        // CREATES NEW ROOM AND CONNECTS USER
-        var room = new Room(chat_id);
-        userReconnect(socket.id,room,false);
-      }
+    // IF ROOM CURRENTLY EXISTS
+    if(room){
+      userReconnect(socket.id,room,true)
+    } else {
+      // CREATES NEW ROOM AND CONNECTS USER
+      var room = new Room(chat_id);
+      userReconnect(socket.id,room,false);
     }
+
   })
 
   // JOIN GROUP CHAT
@@ -115,9 +111,9 @@ module.exports = function (socket, io) {
   })
 
   // SEND A CHAT WITH USER
-  socket.on('chat-send', (text, type, roomid)=>{
+  socket.on('chat-send', (content, type, roomid)=>{
     var room = Room.rooms[roomid];
-    var message = new Message(text, connections[socket.id].user, type);
+    var message = new Message(content, connections[socket.id].user, type);
     room.messages.push(message);
     io.in(room.id).emit('chat-updated', {room:room});
   })
