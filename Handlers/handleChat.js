@@ -41,6 +41,23 @@ module.exports = function (socket, io) {
           ], messages: []
         })
 
+        // UPDATE SELF AND USER'S CHATROOM
+        // FIND SOCKET WITH OTHER'S SOCKET.ID
+        for(var id in connections){
+          if (connections[id].id==other_user._id){
+            var user = await User.findOne({_id: other_user._id})
+                                  .populate({path: 'group_chat', populate:{path: 'users', select: 'username', model:'User'}})
+                                  .populate({path: 'single_chat.user', select: 'username', model: 'User'})
+                                  .exec();
+            sockets[id].emit('update-user', user);
+          }
+        }
+        var user = await User.findOne({_id: user_id})
+                              .populate({path: 'group_chat', populate:{path: 'users', select: 'username', model:'User'}})
+                              .populate({path: 'single_chat.user', select: 'username', model: 'User'})
+                              .exec();
+        socket.emit('update-user', user);
+
         // ADDS NEW ENTRY FOR SINGLE CHAT
         await User.pushField(my_id, 'single_chat', {user: ObjectId(other_id), chat: ObjectId(chat._id)})
 
@@ -102,11 +119,17 @@ module.exports = function (socket, io) {
            // ADD GROUPCHAT TO USER GROUPCHATS
            User.pushField(user.model_id, 'group_chat', ObjectId(chat._id))
            userReconnect(id,room, false);
+           var user = User.findOne({id:user.model_id})
+                           .populate({path: 'group_chat', populate:{path: 'users', select: 'username', model:'User'}})
+                           .populate({path: 'single_chat.user', select: 'username', model: 'User'})
+                           .exec();
+           sockets[id].emit('update-user', user);
 
           break;
          }
        }
      });
+     io.in(room.id).emit('chat-updated', {room:room});
 
   })
 
