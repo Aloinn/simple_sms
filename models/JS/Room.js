@@ -1,12 +1,12 @@
 // MONGOOSE CLASSES
 var Chat = require('/app/models/Chat');
-var Message = require('/app/models/JS/Message');
+var Message = require('/app/models/Message');
 var ObjectId = require('mongoose').Types.ObjectId;
 var app = require('/app/app');
 var async = require('async');
 
 // JAVASCRIPT MESSAGE CLASS
-var Message_JS = require('./Message');
+var Message_JS = require('/app/models/JS/Message');
 
 // ROOM CLASS
 class Room{
