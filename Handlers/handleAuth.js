@@ -34,7 +34,9 @@ module.exports = function (socket) {
       try{
         var user = await User.create({
           username: data.username,
-          password: hash(data.password)
+          password: hash(data.password),
+          single_chat: [],
+          group_chat: [],
         })
       } catch(err){throw "Username already taken!"}
 

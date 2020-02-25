@@ -53,10 +53,10 @@ socket.on('update-users', (connected)=>{
 
 // CHATS
 function sendChat(id){
-  socket.emit('chat-create', id);
+  socket.emit('chat-start', id);
 }
 
-socket.on('response', function(data) {
+socket.on('chat-created', function(data) {
   console.log(data);
 });
 

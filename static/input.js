@@ -22,7 +22,7 @@ function register(){
 
 // CHATS
 function startChat(socketid){
-  socket.emit('chat-create');
+  socket.emit('chat-start', socketid);
 }
 // OTHERS
 var main = document.getElementById('menu-info');

@@ -12,7 +12,14 @@ var UserSchema = new Schema({
   password : {
     type: String,
   },
-  chats : [{type:ObjectId, ref:'Chat'}]
+  // ARRAY OF GROUPCHATS
+  group_chat: [{type:ObjectId, ref:'Chat'}],
+  // ARRAY OF SINGLECHATS
+  single_chat: [{
+    user:{type:ObjectId, ref:'User'},
+    chat:{type:ObjectId, ref:'Chat'},
+    _id : false
+  }]
 })
 
 var User = mongoose.model('User', UserSchema);
