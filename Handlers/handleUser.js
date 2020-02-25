@@ -2,7 +2,7 @@
 
 // HANDLE ROOM
 var Room = require('/app/models/JS/Room');
-var User = require('/app/models/User');
+var User = require('/app/models/user');
 
 module.exports = function (socket, io) {
 

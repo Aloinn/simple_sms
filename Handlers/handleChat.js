@@ -2,7 +2,7 @@
 var Room = require('/app/models/JS/Room');
 var Message = require('/app/models/JS/Message');
 var Chat = require('/app/models/Chat');
-var User = require('/app/models/User');
+var User = require('/app/models/user');
 var ObjectId = require('mongoose').Types.ObjectId;
 var async = require('async');
 
