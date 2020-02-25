@@ -1,13 +1,4 @@
-var express = require('express');
-var router = express.Router();
-var bodyParser = require('body-parser');
-var config = require('../config');
-const Crypto = require('crypto')
-const jwt = require('jsonwebtoken');
 
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({extended:true}));
-var User = require('./User')
 
 // CREATE NEW USER
 router.post('/register', (req, res)=>{

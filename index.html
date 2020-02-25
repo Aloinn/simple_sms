@@ -4,14 +4,27 @@
   </head>
 
   <body>
+    <!-- AUTH MODULE -->
+    <div id="menu-auth">
+      <input type="text" id="login-username" placeholder="Username"></br>
+      <input type="password" id="login-password" placeholder="Password"></br>
+      <button onclick="login()">Login</button></br></br>
+
+      <input type="text" id="register-username" placeholder="Username"></br>
+      <input type="password" id="register-password1" placeholder="Password"></br>
+      <input type="password" id="register-password2" placeholder="Confirm password"></br>
+      <button onclick="register()">Login</button></br>
+
+      <p id="err">aasf</p>
+    </div>
+
+    <!-- ROOM -->
     <div id="menu-controls">
       <button onclick="createRoom()">Create Room</button></br>
       <input type="text" id="text-room-id">
       <button onclick="joinRoom(document.getElementById('text-room-id').value)">Join Room</button></br>
       <button onclick="leaveRoom()">Leave Room</button></br>
       <button onclick="details()">Details</button></br>
-    </div>
-    <div id="menu-info">
     </div>
   </body>
 

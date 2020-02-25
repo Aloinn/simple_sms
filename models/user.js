@@ -1,13 +1,19 @@
-class User{
-  static rooms = [];
-  
-  // CONSTRUCTOR FOR ROOM INSTANCE
-  constructor(){
-    Room.rooms.push(this.id);
-    this.id = Room.createCode();
-    this.usersmax = 10;
-    this.users = [];
-  }
-}
+// User.JS
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+const ObjectId = require('mongoose').Types.ObjectId;
 
-module.exports = User;
+var UserSchema = new Schema({
+  username : {
+    type: String,
+    unique: true,
+    match: [/^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/, 'Please fill a valid '],
+    required: true},
+  password : {
+    type: String,
+  },
+  chats : [{type:ObjectId, ref:'Chat'}]
+})
+
+var User = mongoose.model('User', UserSchema);
+module.exports = User
