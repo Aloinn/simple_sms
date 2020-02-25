@@ -2,6 +2,7 @@
 var Chat = require('../Chat')
 var Message = require('../Message')
 var ObjectId = require('mongoose').Types.ObjectId;
+var app = require('../.././app')
 var async = require('async');
 
 // JAVASCRIPT MESSAGE CLASS
@@ -11,7 +12,7 @@ var Message_JS = require('./Message');
 class Room{
 
   // CONSTRUCTOR FOR ROOM INSTANCE
-  constructor(chat_id, callback){
+  constructor(chat_id){
     this.id = Room.createCode();
     Room.roomAdd(this.id, this);
     this.usersmax = 10;
@@ -21,7 +22,7 @@ class Room{
 
     // CHECK IF ROOM EXISTS
     this._id = chat_id
-    this.load(callback);
+    this.load();
   }
 
   // USER JOINS ROOM
@@ -31,11 +32,12 @@ class Room{
   }
 
   // ASYNC SAVE/LOAD
-  async load(callback){
+  async load(){
     try{
       var chat = await Chat.findOne({_id: ObjectId(this._id)})
                 .populate({path: 'messages', model: 'Message'})
                 .exec();
+                console.log(chat)
       if (chat==undefined) throw 'Chat does not exist';
       for(var i in chat.messages){
         var message = chat.messages[i]
@@ -43,8 +45,8 @@ class Room{
         var _message = new Message_JS(message.content, message.user, message.type, message.date);
         this.oldmessages.push(_message)
       }
-    }catch(err){console.log(err);return callback()}
-    callback();
+    }catch(err){console.log('test',err);}
+    app.io.in(this.id).emit('chat-started', {room:this});
   }
 
   async save(){

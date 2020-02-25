@@ -22,5 +22,16 @@ var UserSchema = new Schema({
   }]
 })
 
+UserSchema.statics.pushField = (id, field, topush)=>{
+  return new Promise((resolve, reject)=>{
+    var param = {};
+    param[field]=topush
+    User.findByIdAndUpdate(id,
+      {$push : param},
+      {safe: true, upsert: true, new : true},
+      (err, model)=>{resolve()}
+    )
+  })
+}
 var User = mongoose.model('User', UserSchema);
 module.exports = User

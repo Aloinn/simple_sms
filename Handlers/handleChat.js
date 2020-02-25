@@ -6,7 +6,12 @@ var User = require('../models/User');
 var ObjectId = require('mongoose').Types.ObjectId;
 var async = require('async');
 
+
+
 module.exports = function (socket, io) {
+  test = {};
+  test['hey']=45
+  console.log(test);
 
   // CREATE A CHAT WITH USER (1-1)
   socket.on('chat-start', async (other, users)=>{
@@ -42,27 +47,13 @@ module.exports = function (socket, io) {
         })
 
         // PUSH THE SINGLE CHAT FOR BOTH USERS
-        User.findByIdAndUpdate(my_id,
-                    {$push : { single_chat:
-                        {
-                          user: ObjectId(other_id),
-                          chat: ObjectId(chat._id)
-                        }
-                    }},{safe: true, upsert: true, new : true},
-                    function(err, model) {if(err)throw err})
+        await User.pushField(my_id, 'single_chat', {user: ObjectId(other_id), chat: ObjectId(chat._id)})
 
         // IF NOT SAME USER, UPDATE OTHER USER
         if(String(my_id)!=String(other_id)){
-          User.findByIdAndUpdate(other_id,
-                      {$push : { single_chat:
-                      {
-                          user: ObjectId(my_id),
-                          chat: ObjectId(chat._id)
-                        }
-                      }},{safe: true, upsert: true, new : true},
-                      function(err, model) {if(err)throw err})
+          await User.pushField(other_id, 'single_chat', {user: ObjectId(my_id), chat:ObjectId(chat._id)})
+          chat_id = chat._id
         }
-        chat_id = chat._id
       }
     }catch(err){console.log(err)}
 
@@ -70,52 +61,41 @@ module.exports = function (socket, io) {
     // 1-1 CHATS
     if(users<=2){
       var room = Room.roomExists(chat_id);
-      if(room){
-        connections[socket.id].room = room.id;
-        room.userJoin(socket.id);
-        socket.join(room.id);
-        socket.emit('chat-started', {room:room})
 
-      // IF ROOM WITH CORRESPONDING MONGOOSE OBJECT DOES NOT EXIST
+      // IF ROOM CURRENTLY EXISTS
+      if(room){
+        userReconnect(socket.id,room,true)
+        roomGreet(room);
       } else {
         // CREATES NEW ROOM AND CONNECTS USER
-        var room = new Room(chat_id, ()=>{io.in(room.id).emit('chat-started', {room:room});});
-        connections[socket.id].room = room.id;
-        room.userJoin(socket.id);
-        socket.join(room.id);
+        var room = new Room(chat_id);
+        roomGreet(room);
+        userReconnect(socket.id,room,false);
 
         // FIND THE OTHER USER THROUGH CONNECTED LIST THEN CONNECTS
         for(id in connections){
           if(String(connections[id].id)==String(other)){
-            connections[id].room = room.id;
-            room.userJoin(id);
-            sockets[id].join(room.id);
+            userReconnect(id,room,false);
             break;
           }
         }
       }
     }
-
-    // START
-    var message = new Message('Room created', room.id, "text");
-    room.oldmessages.push(message)
   })
 
   // JOIN GROUP CHAT
   socket.on('chat-join-group', async (chat_id)=>{
     var chat = await Chat.findOne({_id: chat_id});
     var room = Room.roomExists(chat_id);
-    if(!room)
-    {room = new Room(chat_id, ()=>{io.in(room.id).emit('chat-started', {room:room})});}
-    connections[socket.id].room = room.id;
-    room.userJoin(socket.id);
-    socket.join(room.id);
-    socket.emit('chat-started', {room:room})
+    var late = true;
+    if(!room){
+      late = false;
+      room = new Room(chat_id);
+      roomGreet(room);
+    }
 
-    // START
-    var message = new Message('Room created', room.id, "text");
-    room.oldmessages.push(message)
-    if(!room)io.in(room.id).emit('chat-started', {room:room});
+
+    userReconnect(socket.id,room,late);
   })
 
   // START GROUP CHAT
@@ -131,31 +111,23 @@ module.exports = function (socket, io) {
       messages: []
     })
     chat_id = chat._id;
-    var room = new Room(chat_id, ()=>{});
-
+    var room = new Room(chat_id);
+    roomGreet(room);
     // CONNECT USERS
     async.each(user_list, (user)=>{
        // FIND USER THROUGH USERLIST
        for(id in connections){
          if(String(connections[id].id)==String(user.model_id)){
-           connections[id].room = room.id;
-           room.userJoin(id);
-           sockets[id].join(room.id);
 
            // ADD GROUPCHAT TO USER GROUPCHATS
-           User.findByIdAndUpdate(user.model_id,
-               {$push : { group_chat : ObjectId(chat._id)}},
-               {safe: true, upsert: true, new : true},
-               function(err, model) {if(err) throw err;})
+           User.pushField(user.model_id, 'group_chat', ObjectId(chat._id))
+           userReconnect(id,room, false);
+
           break;
          }
        }
      });
 
-     // START
-     var message = new Message('Room created', room.id, "text");
-     room.oldmessages.push(message)
-     io.in(room.id).emit('chat-started', {room:room});
   })
 
   // SEND A CHAT WITH USER
@@ -165,4 +137,18 @@ module.exports = function (socket, io) {
     room.messages.push(message);
     io.in(room.id).emit('chat-updated', {room:room});
   })
+}
+
+// HELPER FUNCTIONS
+roomGreet = (room)=>{
+  // START
+  var message = new Message('Room created', room.id, "text");
+  room.oldmessages.push(message)
+}
+
+userReconnect = (socketid, room, late) =>{
+  connections[socketid].room = room.id;
+  room.userJoin(socketid);
+  sockets[socketid].join(room.id);
+  if(late) sockets[socketid].emit('chat-started', {room:room})
 }

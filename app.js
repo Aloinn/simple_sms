@@ -37,3 +37,5 @@ io.on('connection', function(socket){
   handleChat(socket, io);
 
 })
+
+module.exports.io = io;
