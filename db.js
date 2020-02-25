@@ -1,3 +1,4 @@
 // db.js
 var mongoose = require('mongoose');
-mongoose.connect(ENV['mongoDB'], {useFindAndModify: false,useNewUrlParser: true, useUnifiedTopology:true})
+var config = require('./config.js')||process.env;
+mongoose.connect(config.mongoDB, {useFindAndModify: false,useNewUrlParser: true, useUnifiedTopology:true})

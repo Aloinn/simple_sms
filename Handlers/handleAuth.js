@@ -1,4 +1,5 @@
 // DEPENDENCIES
+const config = require('../config') || process.env;
 const jwt = require('jsonwebtoken');
 const Crypto = require('crypto')
 const User = require('../models/User')
@@ -12,13 +13,13 @@ module.exports = function (socket) {
     // CHECK IF REQUEST SENT FROM LEGIT SOURCE
     try{
       // ASYNC
-      if(data.csrf_key!=ENV['csrf_key']) throw 'Invalid CSRF!'
+      if(data.csrf_key!=config.csrf_key) throw 'Invalid CSRF!'
       var user = await User.findOne({ 'username' : data.username}).exec();
       if (user==undefined) throw 'User does not exist';
       if (!verifyPasswords(user.password, data.password)) throw 'Invalid password';
 
       // USER AUTHENTICATED!
-      var token = jwt.sign({data: user._id}, ENV['secret'], { expiresIn: '1h'})
+      var token = jwt.sign({data: user._id}, config.secret, { expiresIn: '1h'})
       socket.emit('response-login', {status:true, message:token, user:user});
 
     }catch(err){ socket.emit('response-login', {status:false, message:err})}
@@ -29,7 +30,7 @@ module.exports = function (socket) {
     try{
 
       // ASYNC GET USER
-      if(data.csrf_key!=ENV['csrf_key']) throw 'Invalid CSRF!';
+      if(data.csrf_key!=config.csrf_key) throw 'Invalid CSRF!';
       try{
         var user = await User.create({
           username: data.username,
@@ -40,7 +41,7 @@ module.exports = function (socket) {
       } catch(err){throw "Username already taken!"}
 
       // USER REGISTERED!
-      var token = jwt.sign({data: user._id}, ENV['secret'], { expiresIn: '1h'})
+      var token = jwt.sign({data: user._id}, config.secret, { expiresIn: '1h'})
       socket.emit('response-register', {status:true, message:token, user:user});
 
     }catch(err){ console.log(err); socket.emit('response-register', {status:false, message:err})}
