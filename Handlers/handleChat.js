@@ -111,6 +111,20 @@ module.exports = function (socket, io) {
     chat_id = chat._id;
     var room = new Room(chat_id);
     // CONNECT USERS
+    for(let user of user_list){
+      for(id in connections){
+        if(String(connections[id].id)==String(user.model_id)){
+          var _user =  User.findOne({id: ObjectId(user.model_id)})
+                            .populate({path: 'group_chat', populate:{path: 'users', select: 'username', model:'User'}})
+                            .populate({path: 'single_chat.user', select: 'username', model: 'User'})
+                            .exec();
+          sockets[id].emit('update-user', _user);
+          break;
+        }
+      }
+    }
+
+    // CONNECT USERS
     async.each(user_list, (user)=>{
        // FIND USER THROUGH USERLIST
        for(id in connections){
@@ -119,15 +133,11 @@ module.exports = function (socket, io) {
            // ADD GROUPCHAT TO USER GROUPCHATS
            User.pushField(user.model_id, 'group_chat', ObjectId(chat._id))
            userReconnect(id,room, false);
-
-           User.findOne({id: ObjectId(user.model_id)})
-               .populate({path: 'group_chat', populate:{path: 'users', select: 'username', model:'User'}})
-               .populate({path: 'single_chat.user', select: 'username', model: 'User'})
-               .exec((err,_user)=>{sockets[id].emit('update-user', _user);});
           break;
          }
        }
      });
+
      io.in(room.id).emit('chat-updated', {room:room});
 
   })
