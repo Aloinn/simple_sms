@@ -46,8 +46,25 @@ Username | Users |Content
 Password | Messages |Sender
 Group_chat | |Type
 Single_chat | |Date
+
 #### Javascript
 Rooms|Messages
+-----|-------
+Identifier| Content
+Usersmax| Sender
+Users| Type
+OldMessages| Date
+Messages|
+
+I switch between Javascript and Mongoose models to achieve a balance between realtime and persistent data. There are two Messages classes, the Mongoose is for storage while the Javascript is for real time processing. 
+
+#### Rooms
+The Javascript Room class touches on both persistent and real-time data. Rooms are created to support the organization of a real-time chat but they also read and write data to and from the database.
+
+Rooms are based around the socket.io channels, a room's unique 4 digit identifier is used as the channel's name. Whenever a user tries to start a chat with another user (1 to 1), the rooms class checks the MongoDB database to see if a chat already exists between the two users. The room constructor always tries to load previous messages from the database. Previous messages are saved to the room's 'oldMessages' array variable while newly recieved ones are saved into the 'Messages' array variable.
+
+If all users leave a room, it is automatically destroyed. All data in the 'Messages' array are saved onto the corresponding Mongoose Chat Object to be accessed again if the chat is reopenned.
+
 ### Handlers
 
 
