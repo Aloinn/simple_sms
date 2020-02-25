@@ -1,8 +1,8 @@
 // HANDLE CHAT CALLS
-var Room = require('../models/JS/Room');
-var Message = require('../models/JS/Message');
-var Chat = require('../models/Chat');
-var User = require('../models/User');
+var Room = require('/app/models/JS/Room');
+var Message = require('/app/models/JS/Message');
+var Chat = require('/app/models/Chat');
+var User = require('/app/models/User');
 var ObjectId = require('mongoose').Types.ObjectId;
 var async = require('async');
 

@@ -1,8 +1,8 @@
 // HANDLE USER CALLS
 
 // HANDLE ROOM
-var Room = require('../models/JS/Room');
-var User = require('../models/User');
+var Room = require('/app/models/JS/Room');
+var User = require('/app/models/User');
 
 module.exports = function (socket, io) {
 
