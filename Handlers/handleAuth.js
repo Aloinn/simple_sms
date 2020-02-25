@@ -2,7 +2,8 @@
 const config = process.env;
 const jwt = require('jsonwebtoken');
 const Crypto = require('crypto');
-var User = require('~/models/User');
+const path = require('path');
+var User = require(path.dirname(require.main.filename)+'/models/User');
 
 // HANDLE AUTHENTICATION CALLS
 module.exports = function (socket) {
