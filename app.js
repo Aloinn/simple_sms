@@ -8,6 +8,7 @@ var http = require('http');
 var path = require('path');
 const port = process.env.PORT || 3001;
 const host = '0.0.0.0';
+const _root = __dirname;
 
 // EXPRESS JS CONNECTION
 app.use('/static', express.static('static'));
