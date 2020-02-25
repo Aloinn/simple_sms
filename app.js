@@ -8,6 +8,7 @@ var http = require('http');
 var path = require('path');
 const port = process.env.PORT || 3001;
 const host = '0.0.0.0';
+
 // EXPRESS JS CONNECTION
 app.use('/static', express.static('static'));
 var server = app.listen(port, host, function()

@@ -1,7 +1,6 @@
 {
   "name": "simple_sms",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
@@ -21,5 +20,15 @@
     "multer-s3": "^2.9.0",
     "nodemon": "^2.0.2",
     "socket.io": "^2.3.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aloinn/simple_sms.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Aloinn/simple_sms/issues"
+  },
+  "homepage": "https://github.com/Aloinn/simple_sms#readme",
+  "description": ""
 }
