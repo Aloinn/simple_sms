@@ -4,6 +4,7 @@ This app features real time messaging and persistent message data between users 
 
 ## Usage
 ### Login / Registration
+
 Registration or authentication is required before any services are available.
 All usernames must be unique and password is hashed before storing into the database
 
@@ -20,6 +21,7 @@ Messages may only be accessed by parties that sent or recieved them.
 ![](2.gif)
 
 ### Group Messaging
+
 To message a group of people, click on the '+' button beside the names of users you wish to add.
 Once you are satisfied with the group, click on the "Start Group Chat" button.
 A new group chat will be created and all members of the group will have access to the group chat on the side panel.
@@ -34,3 +36,18 @@ To access an old chat, click on one of the avalible existing chats to re-open th
 All messages sent in the chat are saved indefinitely.
 
 ![](4.gif)
+
+## Backend
+### Models
+#### Mongoose
+Users|Chats|Messages
+-----|-----|------
+- Username | - Users | - Content
+- Password | - Messages | - Sender
+- Group_chat | | - Type
+- Single_chat | | - Date
+#### Javascript
+Rooms|Messages
+### Handlers
+
+
