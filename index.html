@@ -1,51 +1,55 @@
 <html>
   <head>
     <title>My simple SMS</title>
+    <link rel="stylesheet" type="text/css" href="/static/reset.css">
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
   </head>
 
   <body>
+
     <!-- AUTH MODULE -->
-    <div id="menu-auth">
-      <input type="text" id="login-username" placeholder="Username"></br>
-      <input type="password" id="login-password" placeholder="Password"></br>
-      <button onclick="login()">Login</button></br></br>
+    <div id="menu-auth" class="menu">
+      <h1>Simple SMS</h1></br>
 
-      <input type="text" id="register-username" placeholder="Username"></br>
-      <input type="password" id="register-password1" placeholder="Password"></br>
-      <input type="password" id="register-password2" placeholder="Confirm password"></br>
-      <button onclick="register()">Register</button></br>
+      <input class="text-input" type="text" id="login-username" placeholder="Username"></br>
+      <input class="text-input" type="password" id="login-password" placeholder="Password"></br>
+      <button class="btn" onclick="login()">Login</button></br></br>
 
-      <p id="err"</p>
+      <input class="text-input" type="text" id="register-username" placeholder="Username"></br>
+      <input class="text-input" type="password" id="register-password1" placeholder="Password"></br>
+      <input class="text-input" type="password" id="register-password2" placeholder="Confirm password"></br>
+      <button class="btn" onclick="register()">Register</button></br>
+      </br>
+      <p id="err"></p>
     </div>
 
     <!-- ROOM -->
-    <div id="menu-controls">
-      <p>Online users</p>
-      <ul id="display-online">
-      </ul></br>
+    <div id="menu-main">
+      <div id="menu-controls" class="menu">
+        <p class="topic">Online users</p>
+        <ul class="list" id="display-online">
+        </ul></br>
 
-      <p>Making Groupchat</p>
-      <ul id="display-chatlist">
-      </ul></br>
-      <button onclick="startGroupChat()">Start Group Chat</button></br>
+        <p class="topic">My chats</p>
+        <ul class="list" id="display-chats">
+        </ul></br>
 
-      <p>My chats</p>
-      <ul id="display-users">
-      </ul></br>
+        <p class="topic">Making Groupchat</p>
+        <ul class="list" id="display-chatlist">
+        </ul></br>
+        <button class="btn" id="btn-gc" onclick="startGroupChat()">Start Group Chat</button></br>
+      </div>
 
-      <ul id="display-chats">
-      </ul></br>
+      <!-- CHAT -->
+      <div id="display-chat" class="menu">
+        <div id="chat-container">
+          <ul id="chat-content">
 
-    </div>
-
-    <!-- CHAT -->
-    <div id="display-chat">
-      <ul>
-        <li id="chat-content">
-        </li>
-      </ul>
-      <input type="text" id="chat-text" placeholder="Press here to chat"></br>
-      <button onclick="sendChat(document.getElementById('chat-text').value)">Chat</button></br>
+          </ul>
+        </div>
+        <input class="text-input" type="text" id="chat-text" placeholder="Press here to chat">
+        <button class="btn" href="#" class="submit" id="chat-button" onclick="sendChat(document.getElementById('chat-text').value)">Chat</button></br>
+      </div>
     </div>
 
   </body>

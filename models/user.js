@@ -12,8 +12,10 @@ var UserSchema = new Schema({
   password : {
     type: String,
   },
+
   // ARRAY OF GROUPCHATS
   group_chat: [{type:ObjectId, ref:'Chat'}],
+
   // ARRAY OF SINGLECHATS
   single_chat: [{
     user:{type:ObjectId, ref:'User'},
@@ -22,6 +24,7 @@ var UserSchema = new Schema({
   }]
 })
 
+// QUICKLY PUSH TO ARRAY OF MONGODB MODEL
 UserSchema.statics.pushField = (id, field, topush)=>{
   return new Promise((resolve, reject)=>{
     var param = {};

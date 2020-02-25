@@ -66,14 +66,6 @@ module.exports = function (socket, io) {
         // CREATES NEW ROOM AND CONNECTS USER
         var room = new Room(chat_id);
         userReconnect(socket.id,room,false);
-
-        // FIND THE OTHER USER THROUGH CONNECTED LIST THEN CONNECTS
-        for(id in connections){
-          if(String(connections[id].id)==String(other)){
-            userReconnect(id,room,false);
-            break;
-          }
-        }
       }
     }
   })

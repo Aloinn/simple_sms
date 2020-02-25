@@ -7,8 +7,13 @@ app = {
   room: undefined,
   chatlist: [],
 }
+
 var menu_auth = document.getElementById('menu-auth');
 var menu_controls = document.getElementById('menu-controls');
+var menu_main = document.getElementById('menu-main');
+
+var menus = [menu_auth, menu_main]
+menuShow(menu_auth)
 
 var display_online = document.getElementById('display-online');
 var display_chat = document.getElementById('display-chat');
@@ -20,6 +25,14 @@ var socket = io();
 
 var csrf = "TEST"
 
+function menuShow(_menu){
+  for(let menu of menus)
+  {menu.style.display='none'}
+  switch(_menu){
+    case menu_auth: _menu.style.display='block'; break;
+    case menu_main: _menu.style.display='flex'; break;
+  }
+}
 //
 //  AUTH
 //
@@ -69,14 +82,15 @@ socket.on('update-users', (connected)=>{
     node.innerHTML= connected[id].user
     if(id!=socket.id){
       node.innerHTML+=
-      '\t \t<a href="#" onClick="startChat(\''+connected[id].id+'\')">chat</a>'+
-      '\t \t<a href="#" onClick="addToChat(\''+connected[id].id+'\', \''+ connected[id].user+'\')">add to group</a>'
+      '\t \t<a href="#" onClick="startChat(\''+connected[id].id+'\')">msg</a>'+
+      '\t \t<a href="#" onClick="addToChat(\''+connected[id].id+'\', \''+ connected[id].user+'\')">+</a>'
     }display_online.appendChild(node)
   }
 })
 
 // GET CHATS
 socket.on('update-user', (user)=>{
+  menuShow(menu_main)
   console.log(user);
   app.user = user;
   updateChats();
@@ -128,7 +142,7 @@ function updateChats(){
       name+= user.username +", "
     }
     node.innerHTML=
-    '\t \t<a href="#" onClick="joinGroupChat(\''+group_chat._id+'\')">'+name+'\'</a>';
+    '\t \t<a href="#" onClick="joinGroupChat(\''+group_chat._id+'\')">'+name+'</a>';
     display_chats.append(node)
   }
 }

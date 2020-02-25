@@ -1,0 +1,125 @@
+
+@import url("https://fonts.googleapis.com/css?family=Montserrat&display=swap");
+body{
+  font-family: "Montserrat";
+  font-size: 1rem;
+}
+
+h1{
+  margin: 1rem 0rem;
+  font-size: 3rem;
+}
+
+.menu{
+  text-align: center;
+  display: inline-block;
+}
+
+#menu-auth{
+  width: 30rem;
+  height: 27rem;
+  padding-top: 1rem;
+  vertical-align: middle;
+  background-color: #c9c9c9;
+  position: absolute;
+  top:50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+}
+
+#menu-main{
+  width: 40rem;
+  height: 30rem;
+  vertical-align: middle;
+  background-color: #c9c9c9;
+  position: absolute;
+  top:50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+
+  display:flex;
+  flex-direction: row;
+}
+#menu-controls{
+  margin-left: 1.2rem;
+  width:16rem;
+  height:100%;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#display-chat{
+  display:inline-flex;
+  flex-direction: column;
+  width:100%;
+  align-items: center;
+}
+#chat-text{width:90%;}
+#chat-button{width: 90%;}
+#chat-content{
+  overflow-y: scroll;
+  height:100%;
+}
+#chat-content li{
+  margin: 1rem;
+  text-align: left;
+}
+#chat-container{
+  background-color: #efefef;
+  height:100%;
+  width: 90%;
+  margin: 1rem 0rem;
+}
+#btn-gc{
+  width: 90%;
+}
+input {
+    text-align: center;
+    font-family: "Montserrat";
+    background-color: #efefef;
+    border: none;
+    transition: all 0.3s;
+}
+input:hover {border-color: black;}
+input:focus {outline: none;}
+
+.text-input {
+  margin-bottom: 10px;
+  border-bottom: #efefef solid 1px;
+  padding: 0.4rem 0rem;
+  width: 12rem;
+}
+
+.btn {
+  background-color: #6e6e6e;
+  border: none;
+  color: white;
+  width: 12rem;
+  padding: 0.4rem 0rem;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+.btn:hover{
+  cursor: pointer;
+}
+.topic{
+  font-weight: 1000;
+}
+
+.list{
+  flex:1;
+  width:90%;
+  background-color: #efefef;
+  overflow-y: scroll;
+}
+
+.list li{
+  margin: 0.4rem;
+  text-align: left;
+}
+p{
+  margin: 0.4rem;
+}

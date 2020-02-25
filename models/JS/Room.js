@@ -27,8 +27,6 @@ class Room{
     // CHECK IF ROOM EXISTS
     this._id = chat_id
     this.load();
-
-
   }
 
   // USER JOINS ROOM
@@ -113,9 +111,11 @@ class Room{
       if(typeof Room.rooms[id]==='undefined'){return id}
     }
   }
-  // INSTANCE
+
+  // INSTANCE FUNCTIONS
   checkFull(){return this.users==this.usersmax}
-  // STATIC
+
+  // STATIC FUNCTIONS
   static roomAdd(roomid, room){Room.rooms[roomid]=room}
   static roomRemove(roomid)   {delete(Room.rooms[roomid])}
   static roomExists(chat_id)  {
@@ -125,6 +125,7 @@ class Room{
     } return false
   }
 }
+
 Room.rooms = {};
 
 module.exports = Room;
