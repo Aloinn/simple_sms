@@ -132,7 +132,7 @@ module.exports = function (socket, io) {
            var _user = await User.findOne({id: ObjectId(user.model_id)})
                              .populate({path: 'group_chat', populate:{path: 'users', select: 'username', model:'User'}})
                              .populate({path: 'single_chat.user', select: 'username', model: 'User'})
-                             .exec();
+                             .exec((err,_user)=>{console.log(_user)});
            sockets[id].emit('update-user', _user);
            break;
          }
