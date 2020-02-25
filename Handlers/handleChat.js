@@ -68,22 +68,36 @@ module.exports = function (socket, io) {
       }
     }catch(err){console.log(err)}
 
-    // CREATES NEW ROOM AND CONNECTS USER
-    var room = new Room(chat_id, ()=>{io.in(room.id).emit('chat-started', {room:room});});
-    connections[socket.id].room = room.id;
-    room.userJoin(socket.id);
-    socket.join(room.id);
+    // IF ROOM WITH CORRESPONDING MONGOOSE OBJECT EXISTs
+    var room = Room.roomExists(chat_id);
 
-    // FIND THE OTHER USER THROUGH CONNECTED LIST THEN CONNECTS
-    for(id in connections){
-      if(String(connections[id].id)==String(other)){
-        if(connections[id].room==room.id)
-        connections[id].room = room.id;
-        room.userJoin(id);
-        sockets[id].join(room.id);
-        break;
+    if(room){
+      connections[socket.id].room = room.id;
+      room.userJoin(socket.id);
+      socket.join(room.id);
+      socket.emit('chat-started', {room:room})
+
+    // IF ROOM WITH CORRESPONDING MONGOOSE OBJECT DOES NOT EXIST
+    } else {
+      // CREATES NEW ROOM AND CONNECTS USER
+      var room = new Room(chat_id, ()=>{io.in(room.id).emit('chat-started', {room:room});});
+      connections[socket.id].room = room.id;
+      room.userJoin(socket.id);
+      socket.join(room.id);
+
+      // FIND THE OTHER USER THROUGH CONNECTED LIST THEN CONNECTS
+      for(id in connections){
+        if(String(connections[id].id)==String(other)){
+          if(connections[id].room==room.id)
+          connections[id].room = room.id;
+          room.userJoin(id);
+          sockets[id].join(room.id);
+          break;
+        }
       }
     }
+
+
 
     // START
     var message = new Message('Room created', room.id, "text");

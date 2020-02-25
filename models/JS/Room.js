@@ -77,7 +77,6 @@ class Room{
     }
 
     // DELETES ROOM IF EMPTY OTHERWISE UPDATES
-    console.log(this.users.length)
     if(this.users.length==0){
 
       console.log('saving')
@@ -115,8 +114,9 @@ class Room{
   static roomAdd(roomid, room){Room.rooms[roomid]=room}
   static roomRemove(roomid)   {delete(Room.rooms[roomid])}
   static roomExists(chat_id)  {
-    for(let room of Room.rooms){
-      if(room._id==chat_id){return room}
+    for(let id in Room.rooms){
+      var room = Room.rooms[id]
+      if(String(room._id)==String(chat_id)){return room}
     } return false
   }
 }
