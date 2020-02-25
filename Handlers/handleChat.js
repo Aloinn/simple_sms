@@ -129,7 +129,7 @@ module.exports = function (socket, io) {
      for(let user of user_list){
        for(id in connections){
          if(String(connections[id].id)==String(user.model_id)){
-           var _user =  User.findOne({id: ObjectId(user.model_id)})
+           var _user = await User.findOne({id: ObjectId(user.model_id)})
                              .populate({path: 'group_chat', populate:{path: 'users', select: 'username', model:'User'}})
                              .populate({path: 'single_chat.user', select: 'username', model: 'User'})
                              .exec();
