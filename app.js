@@ -6,11 +6,11 @@ var app = express();
 var cors = require('cors');
 var http = require('http');
 var path = require('path');
-var port = process.env.PORT || 3001;
-
+const port = process.env.PORT || 3001;
+const host = '0.0.0.0';
 // EXPRESS JS CONNECTION
 app.use('/static', express.static('static'));
-var server = app.listen(port, function()
+var server = app.listen(port, host, function()
 {console.log('Express server listening on port ' + port);})
 
 app.get('/', function(req, res){res.sendFile(path.join(__dirname, 'index.html'));});
