@@ -1,8 +1,8 @@
 // MONGOOSE CLASSES
-var Chat = require('../Chat')
-var Message = require('../Message')
+var Chat = require('/app/models/Chat');
+var Message = require('/app/models/JS/Message');
 var ObjectId = require('mongoose').Types.ObjectId;
-var app = require('../.././app')
+var app = require('/app/app');
 var async = require('async');
 
 // JAVASCRIPT MESSAGE CLASS
