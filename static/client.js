@@ -1,11 +1,18 @@
 ////////////////////
 // CLIENTSIDE JS
 ////////////////////
-
+app = {
+  user: undefined,
+  chat: undefined,
+  room: undefined
+}
 var menu_auth = document.getElementById('menu-auth');
 var menu_controls = document.getElementById('menu-controls');
 
 var display_online = document.getElementById('display-online');
+var display_chat = document.getElementById('display-chat');
+
+var chat_content = document.getElementById('chat-content');
 var socket = io();
 
 //
@@ -47,7 +54,6 @@ function register(){
 }
 // GET USERS
 socket.on('update-users', (connected)=>{
-  console.log(connected)
 
   // REMOVE CURRENT LIST OF PLAYERS
   var child = display_online.lastElementChild;
@@ -58,26 +64,59 @@ socket.on('update-users', (connected)=>{
 
   // RECREATE LIST OF PLAYERS
   for(id in connected){
-
     var node = document.createElement("LI");
-    node.innerHTML= connected[id].user+' <a href="#" onClick="sendChat(\''+connected[id].id+'\')">chat</a>'
+    node.innerHTML= connected[id].user+' <a href="#" onClick="startChat(\''+connected[id].id+'\')">chat</a>'
     display_online.appendChild(node)
   }
 
 })
 
 // CHATS
-function sendChat(id){
-  socket.emit('chat-start', id);
-}
+function startChat(socketid){socket.emit('chat-start', socketid, 2);}
+function sendChat(text){socket.emit('chat-send', text, "text", app.room)}
 
-function startChat(socketid){socket.emit('chat-start', socketid);}
+// IF CHAT STARTS
+socket.on('chat-started', (data)=>{
+  var chat = data.room;
+  app.room = chat.id;
+  console.log(data)
 
+  // LOAD OLD MESSAGES
+  for(message of chat.oldmessages){
+    var node = document.createElement("LI");
+    node.innerHTML= message.sender+": "+message.content
+    chat_content.appendChild(node)
+  }
+
+  // LOAD NEW MESSAGES
+  for(message of chat.messages){
+    var node = document.createElement("LI");
+    node.innerHTML= message.sender+": "+message.content
+    chat_content.appendChild(node)
+  }
+})
+
+socket.on('chat-updated', (data)=>{
+  var chat = data.room;
+  var message = chat.messages.pop();
+  var node = document.createElement("LI");
+  node.innerHTML = message.sender+": "+message.content;
+  chat_content.appendChild(node);
+})
+/*
 socket.on('chat-started', function(data) {
-  console.log(data);
-});
-var csrf = "TEST"
+  var chat = data.chat
+  app.chat = chat;
 
+  // RECREATE LIST OF MESSAGES
+  for(message in chat.messages){
+    var node = document.createElement("LI");
+    node.innerHTML= message.user+": "+message.content
+    chat_content.appendChild(node)
+  }
+  chat_content
+});*/
+var csrf = "TEST"
 
 
 // RESPONSE

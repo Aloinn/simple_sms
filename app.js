@@ -26,16 +26,16 @@ var handleChat = require('./Handlers/handleChat');
 
 // SERVER VARIABLES
 connections = {};
+sockets = {};
 
 // SOCKET.IO CONNECTION
 var socketIO = require('socket.io');
 var io = socketIO(server);
 
 io.on('connection', function(socket){
-
   handleAuth(socket);
   handleUser(socket, io);
-  handleChat(socket);
+  handleChat(socket, io);
   handleRoom(socket);
 
 })

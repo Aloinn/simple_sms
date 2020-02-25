@@ -15,7 +15,7 @@
       <input type="password" id="register-password2" placeholder="Confirm password"></br>
       <button onclick="register()">Login</button></br>
 
-      <p id="err">aasf</p>
+      <p id="err"</p>
     </div>
 
     <!-- ROOM -->
@@ -25,6 +25,9 @@
       </ul></br>
 
       <p>My chats</p>
+      <ul id="display-users">
+      </ul></br>
+
       <ul id="display-chats">
       </ul></br>
 
@@ -34,6 +37,17 @@
       <button onclick="leaveRoom()">Leave Room</button></br>
       <button onclick="details()">Details</button></br>
     </div>
+
+    <!-- CHAT -->
+    <div id="display-chat">
+      <ul>
+        <li id="chat-content">
+        </li>
+      </ul>
+      <input type="text" id="chat-text" placeholder="Press here to chat"></br>
+      <button onclick="sendChat(document.getElementById('chat-text').value)">Chat</button></br>
+    </div>
+
   </body>
 
   <script src="/socket.io/socket.io.js"></script>

@@ -1,5 +1,5 @@
 // HANDLE ROOM
-var Room = require('../models/Room');
+var Room = require('../models/JS/Room');
 
 module.exports = function (socket) {
 
