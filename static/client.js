@@ -99,7 +99,7 @@ socket.on('update-user', (user)=>{
 
 // CHATS
 function startChat(socketid){socket.emit('chat-start', socketid, 2);}
-function sendChat(text){socket.emit('chat-send', text, "text", app.room)}
+function sendChat(text){if(app.room!=undefined)socket.emit('chat-send', text, "text", app.room)}
 function addToChat(model_id, name){
   if(!app.chatlist.some((e)=>e==model_id)){
     app.chatlist.push({model_id:model_id,name:name})
