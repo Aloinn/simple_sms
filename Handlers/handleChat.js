@@ -74,11 +74,11 @@ module.exports = function (socket, io) {
 
     // IF ROOM CURRENTLY EXISTS
     if(room){
-      userReconnect(socket.id,room,true)
+      userReconnect(socket.id,room)
     } else {
       // CREATES NEW ROOM AND CONNECTS USER
       var room = new Room(chat_id);
-      userReconnect(socket.id,room,false);
+      userReconnect(socket.id,room);
     }
 
   })
@@ -93,7 +93,7 @@ module.exports = function (socket, io) {
       room = new Room(chat_id);
     }
 
-    userReconnect(socket.id,room,late);
+    userReconnect(socket.id,room);
   })
 
   // START GROUP CHAT
@@ -119,7 +119,7 @@ module.exports = function (socket, io) {
 
            // ADD GROUPCHAT TO USER GROUPCHATS
            User.pushField(user.model_id, 'group_chat', ObjectId(chat._id))
-           userReconnect(id,room, false);
+           userReconnect(id,room);
           break;
          }
        }
@@ -151,7 +151,7 @@ module.exports = function (socket, io) {
   })
 }
 
-userReconnect = (socketid, room, late) =>{
+userReconnect = (socketid, room) =>{
   if(typeof connections[socketid].room != 'undefined'){
     var _rm = Room.rooms[connections[socketid].room];
     _rm.userLeave(socketid);
@@ -159,5 +159,5 @@ userReconnect = (socketid, room, late) =>{
   connections[socketid].room = room.id;
   room.userJoin(socketid);
   sockets[socketid].join(room.id);
-  if(late) sockets[socketid].emit('chat-started', {room:room})
+  sockets[socketid].emit('chat-started', {room:room})
 }
