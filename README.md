@@ -42,10 +42,10 @@ All messages sent in the chat are saved indefinitely.
 #### Mongoose
 Users|Chats|Messages
 -----|-----|------
-- Username | - Users | - Content
-- Password | - Messages | - Sender
-- Group_chat | | - Type
-- Single_chat | | - Date
+Username | Users |Content
+Password | Messages |Sender
+Group_chat | |Type
+Single_chat | |Date
 #### Javascript
 Rooms|Messages
 ### Handlers
