@@ -20,7 +20,6 @@ app.get('/', function(req, res){res.sendFile(path.join(__dirname, 'index.html'))
 
 // MODULES
 var handleAuth = require('./Handlers/handleAuth');
-var handleRoom = require('./Handlers/handleRoom');
 var handleUser = require('./Handlers/handleUser');
 var handleChat = require('./Handlers/handleChat');
 
@@ -36,6 +35,5 @@ io.on('connection', function(socket){
   handleAuth(socket);
   handleUser(socket, io);
   handleChat(socket, io);
-  handleRoom(socket);
 
 })

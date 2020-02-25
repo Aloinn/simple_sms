@@ -58,7 +58,6 @@ class Room{
         date: message.date,
       })
 
-      console.log("sav_")
       var chat =  Chat.findByIdAndUpdate(this._id,
                   {$push : { messages: ObjectId(_message._id)}},
                   {safe: true, upsert: true, new : true},

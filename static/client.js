@@ -4,16 +4,21 @@
 app = {
   user: undefined,
   chat: undefined,
-  room: undefined
+  room: undefined,
+  chatlist: [],
 }
 var menu_auth = document.getElementById('menu-auth');
 var menu_controls = document.getElementById('menu-controls');
 
 var display_online = document.getElementById('display-online');
 var display_chat = document.getElementById('display-chat');
+var display_chats = document.getElementById('display-chats');
+var display_chatlist = document.getElementById('display-chatlist');
 
 var chat_content = document.getElementById('chat-content');
 var socket = io();
+
+var csrf = "TEST"
 
 //
 //  AUTH
@@ -65,15 +70,96 @@ socket.on('update-users', (connected)=>{
   // RECREATE LIST OF PLAYERS
   for(id in connected){
     var node = document.createElement("LI");
-    node.innerHTML= connected[id].user+' <a href="#" onClick="startChat(\''+connected[id].id+'\')">chat</a>'
-    display_online.appendChild(node)
+    node.innerHTML= connected[id].user
+    if(id!=socket.id){
+      node.innerHTML+=
+      '\t \t<a href="#" onClick="startChat(\''+connected[id].id+'\')">chat</a>'+
+      '\t \t<a href="#" onClick="addToChat(\''+connected[id].id+'\', \''+ connected[id].user+'\')">add to group</a>'
+    }display_online.appendChild(node)
   }
 
+})
+
+// GET CHATS
+socket.on('update-user', (user)=>{
+  console.log(user);
+  app.user = user;
+  updateChats();
 })
 
 // CHATS
 function startChat(socketid){socket.emit('chat-start', socketid, 2);}
 function sendChat(text){socket.emit('chat-send', text, "text", app.room)}
+function addToChat(model_id, name){
+  if(!app.chatlist.some((e)=>e==model_id)){
+    app.chatlist.push({model_id:model_id,name:name})
+    updateGroupChatList();
+  }
+}
+function removeFromChat(model_id){
+  for(var i in app.chatlist){
+    if(app.chatlist[i].model_id==model_id){
+      app.chatlist.splice(i,1)
+      updateGroupChatList();
+      break;
+    }
+  }
+}
+function startGroupChat(){
+  app.chatlist.push({model_id: app.user._id, name:"self"});
+  socket.emit('chat-start-group', app.chatlist, app.chatlist.length);
+}
+function joinGroupChat(chat_id){
+  socket.emit('chat-join-group', chat_id)
+}
+
+function updateChats(){
+  // REMOVE CURRENT LIST OF CHATS
+  var child = display_chatlist.lastElementChild;
+  while(child){
+    display_chats.removeChild(child);
+    child = display_chats.lastElementChild;
+  }
+
+  // ADD NODES FOR SINGLE CHATS
+  for(user of app.user.single_chat){
+    var node = document.createElement("LI");
+    node.innerHTML=
+    '\t \t<a href="#" onClick="startChat(\''+user.user._id+'\')">'+user.user.username+'</a>';
+    display_chats.append(node)
+  }
+
+  // ADD NODES FOR GROUP CHATS
+  for(group_chat of app.user.group_chat){
+    var node = document.createElement("LI");
+    var name = ""
+    for(user of group_chat.users){
+      name+= user.username +", "
+    }
+    node.innerHTML=
+    '\t \t<a href="#" onClick="joinGroupChat(\''+group_chat._id+'\')">'+name+'\'</a>';
+    display_chats.append(node)
+  }
+}
+
+// UPDATE FRONTEND CHATLIST
+function updateGroupChatList(){
+
+  // REMOVE CURRENT LIST OF CHATLIST PLAYERS
+  var child = display_chatlist.lastElementChild;
+  while(child){
+    display_chatlist.removeChild(child);
+    child = display_chatlist.lastElementChild;
+  }
+
+  // ADD ALL NODES
+  for(i of app.chatlist){
+    var node = document.createElement("LI");
+    node.innerHTML= i.name+
+    '\t \t<a href="#" onClick="removeFromChat(\''+i.model_id+'\')">remove</a>';
+    display_chatlist.append(node)
+  }
+}
 
 // IF CHAT STARTS
 socket.on('chat-started', (data)=>{
@@ -103,33 +189,3 @@ socket.on('chat-updated', (data)=>{
   node.innerHTML = message.sender+": "+message.content;
   chat_content.appendChild(node);
 })
-/*
-socket.on('chat-started', function(data) {
-  var chat = data.chat
-  app.chat = chat;
-
-  // RECREATE LIST OF MESSAGES
-  for(message in chat.messages){
-    var node = document.createElement("LI");
-    node.innerHTML= message.user+": "+message.content
-    chat_content.appendChild(node)
-  }
-  chat_content
-});*/
-var csrf = "TEST"
-
-
-// RESPONSE
-socket.on('response-room-created', function(data) {
-  socket.emit('room-join', data)
-  console.log(data);
-});
-socket.on('response-room-joined', function(data) {
-  console.log(data);
-});
-socket.on('response-room-detail', function(data) {
-  console.log(data);
-});
-socket.on('response-room-list', function(data) {
-  console.log(data);
-});

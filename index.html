@@ -13,7 +13,7 @@
       <input type="text" id="register-username" placeholder="Username"></br>
       <input type="password" id="register-password1" placeholder="Password"></br>
       <input type="password" id="register-password2" placeholder="Confirm password"></br>
-      <button onclick="register()">Login</button></br>
+      <button onclick="register()">Register</button></br>
 
       <p id="err"</p>
     </div>
@@ -23,6 +23,11 @@
       <p>Online users</p>
       <ul id="display-online">
       </ul></br>
+
+      <p>Making Groupchat</p>
+      <ul id="display-chatlist">
+      </ul></br>
+      <button onclick="startGroupChat()">Start Group Chat</button></br>
 
       <p>My chats</p>
       <ul id="display-users">
@@ -47,5 +52,4 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="/static/client.js"></script>
-  <script src="/static/input.js"></script>
 </html>

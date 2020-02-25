@@ -2,11 +2,12 @@
 
 // HANDLE ROOM
 var Room = require('../models/JS/Room');
+var User = require('../models/User');
 
 module.exports = function (socket, io) {
 
   // ON USER SUCCESSFULLY AUTH AND CONNECTED
-  socket.on('user-connected', (user_id, user_name)=>{
+  socket.on('user-connected', async (user_id, user_name)=>{
 
     // CREATE NEW ENTRY FOR CONNECTIONS
     connections[socket.id] = {
@@ -17,7 +18,13 @@ module.exports = function (socket, io) {
     sockets[socket.id] = socket;
 
     // UPDATES ALL USERS CONNECTIONS LIST
-    io.emit('update-users', connections)
+    io.emit('update-users', connections);
+    var user = await User.findOne({_id: user_id})
+                          .populate({path: 'group_chat', populate:{path: 'users', select: 'username', model:'User'}})
+                          .populate({path: 'single_chat.user', select: 'username', model: 'User'})
+                          .exec();
+    user.password="";
+    socket.emit('update-user', user);
   })
 
   // GET ALL CONNECTED USERS
