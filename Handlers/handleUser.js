@@ -3,21 +3,25 @@
 // HANDLE ROOM
 var Room = require('../models/Room');
 
-module.exports = function (socket) {
+module.exports = function (socket, io) {
 
   // ON USER SUCCESSFULLY AUTH AND CONNECTED
-  socket.on('user-connected', (name)=>{
+  socket.on('user-connected', (user_id, user_name)=>{
 
     // CREATE NEW ENTRY FOR CONNECTIONS
     connections[socket.id] = {
       room:undefined,
-      user:name
+      user:user_name,
+      id:user_id,
     }
+
+    // UPDATES ALL USERS CONNECTIONS LIST
+    io.emit('update-users', connections)
   })
 
   // GET ALL CONNECTED USERS
   socket.on('user-list', ()=>{
-    return connections
+    socket.broadcast('updat')
   })
 
   // ON USER DISCONNECT

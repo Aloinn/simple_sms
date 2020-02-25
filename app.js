@@ -22,6 +22,8 @@ app.get('/', function(req, res){res.sendFile(path.join(__dirname, 'index.html'))
 var handleAuth = require('./Handlers/handleAuth');
 var handleRoom = require('./Handlers/handleRoom');
 var handleUser = require('./Handlers/handleUser');
+var handleChat = require('./Handlers/handleChat');
+
 // SERVER VARIABLES
 connections = {};
 
@@ -32,7 +34,8 @@ var io = socketIO(server);
 io.on('connection', function(socket){
 
   handleAuth(socket);
-  handleUser(socket);
+  handleUser(socket, io);
+  handleChat(socket);
   handleRoom(socket);
 
 })

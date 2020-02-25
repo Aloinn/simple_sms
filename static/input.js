@@ -19,6 +19,11 @@ function register(){
     console.log("Passwords dont match!")
   }
 }
+
+// CHATS
+function startChat(socketid){
+  socket.emit('chat-create');
+}
 // OTHERS
 var main = document.getElementById('menu-info');
 

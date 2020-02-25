@@ -8,7 +8,7 @@ const User = require('../models/User')
 module.exports = function (socket) {
 
   // WHEN USER LOGINS
-  socket.on('login', async function (data) {
+  socket.on('login', async (data)=>{
 
     // CHECK IF REQUEST SENT FROM LEGIT SOURCE
     try{
@@ -20,13 +20,13 @@ module.exports = function (socket) {
 
       // USER AUTHENTICATED!
       var token = jwt.sign({data: user._id}, config.secret, { expiresIn: '1h'})
-      socket.emit('login-response', {status:true, message:token, name:user.username});
+      socket.emit('response-login', {status:true, message:token, user:user});
 
-    }catch(err){ socket.emit('login-response', {status:false, message:err})}
+    }catch(err){ socket.emit('response-login', {status:false, message:err})}
   });
 
   // WHEN USER REGISTERS
-  socket.on('register', async function (data) {
+  socket.on('register', async (data)=>{
     try{
 
       // ASYNC GET USER
@@ -40,9 +40,9 @@ module.exports = function (socket) {
 
       // USER REGISTERED!
       var token = jwt.sign({data: user._id}, config.secret, { expiresIn: '1h'})
-      socket.emit('register-response', {status:true, message:token, name:user.username});
+      socket.emit('response-register', {status:true, message:token, user:user});
 
-    }catch(err){ console.log(err); socket.emit('register-response', {status:false, message:err})}
+    }catch(err){ console.log(err); socket.emit('response-register', {status:false, message:err})}
 
   });
 };
