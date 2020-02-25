@@ -41,6 +41,15 @@ module.exports = function (socket, io) {
           ], messages: []
         })
 
+        // ADDS NEW ENTRY FOR SINGLE CHAT
+        await User.pushField(my_id, 'single_chat', {user: ObjectId(other_id), chat: ObjectId(chat._id)})
+
+        // IF NOT SAME USER, UPDATE OTHER USER
+        if(String(my_id)!=String(other_id)){
+          await User.pushField(other_id, 'single_chat', {user: ObjectId(my_id), chat:ObjectId(chat._id)})
+          chat_id = chat._id
+        }
+
         // UPDATE SELF AND USER'S CHATROOM
         // FIND SOCKET WITH OTHER'S SOCKET.ID
         for(var id in connections){
@@ -57,15 +66,6 @@ module.exports = function (socket, io) {
                               .populate({path: 'single_chat.user', select: 'username', model: 'User'})
                               .exec();
         socket.emit('update-user', user);
-
-        // ADDS NEW ENTRY FOR SINGLE CHAT
-        await User.pushField(my_id, 'single_chat', {user: ObjectId(other_id), chat: ObjectId(chat._id)})
-
-        // IF NOT SAME USER, UPDATE OTHER USER
-        if(String(my_id)!=String(other_id)){
-          await User.pushField(other_id, 'single_chat', {user: ObjectId(my_id), chat:ObjectId(chat._id)})
-          chat_id = chat._id
-        }
       }
     }catch(err){console.log(err)}
 

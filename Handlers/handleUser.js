@@ -27,11 +27,6 @@ module.exports = function (socket, io) {
     socket.emit('update-user', user);
   })
 
-  // GET ALL CONNECTED USERS
-  socket.on('user-list', ()=>{
-    socket.broadcast('updat')
-  })
-
   // ON USER DISCONNECT
   socket.on('disconnect', async function(){
     var room;
