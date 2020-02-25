@@ -37,4 +37,5 @@ io.on('connection', function(socket){
 
 })
 
+module.exports._root = _root;
 module.exports.io = io;
