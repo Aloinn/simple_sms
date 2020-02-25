@@ -13,7 +13,7 @@ module.exports = function (socket, io) {
       // ObjectIds
       var my_id = ObjectId(connections[socket.id].id);
       var other_id = other;
-
+      console.log(my_id, other_id);
       // CHECK IF 1-1 CHAT EXISTS FOR USER COMBINATION
       var my_user = await User.findOne({_id:ObjectId(my_id)}).exec();
       var other_user = await User.findOne({_id:ObjectId(other_id)}).exec();
@@ -21,7 +21,13 @@ module.exports = function (socket, io) {
 
       if(chat_exists){
         // FIND EXISTING CHAT
-        console.log('test')
+        for(var chat of my_user.single_chat){
+          if(String(chat.user)==other_user._id){
+            socket.emit('chat-started', {status:true, message:chat.chat._id})
+            break;
+          }
+        }
+
       }else{
         // CREATE NEW ENTRY FOR CONNECTIONS
 
@@ -38,7 +44,7 @@ module.exports = function (socket, io) {
                     {$push : { single_chat:
                         {
                           user: ObjectId(other_id),
-                          chat: (chat._id)
+                          chat: ObjectId(chat._id)
                         }
                     }},{safe: true, upsert: true, new : true},
                     function(err, model) {if(err)throw err})
@@ -52,10 +58,10 @@ module.exports = function (socket, io) {
                       }}},{safe: true, upsert: true, new : true},
                       function(err, model) {if(err)throw err})
         }
-        socket.emit('chat-created',{status:true, message:chat.id})
+        socket.emit('chat-started',{status:true, message:chat._id})
       }
 
-    }catch(err){console.log(err);socket.emit('chat-created',{status:false, message:err})}
+    }catch(err){console.log(err);socket.emit('chat-started',{status:false, message:err})}
 
   })
 }

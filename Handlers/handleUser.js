@@ -4,7 +4,6 @@
 var Room = require('../models/Room');
 
 module.exports = function (socket, io) {
-
   // ON USER SUCCESSFULLY AUTH AND CONNECTED
   socket.on('user-connected', (user_id, user_name)=>{
 
@@ -14,7 +13,7 @@ module.exports = function (socket, io) {
       user:user_name,
       id:user_id,
     }
-
+    console.log(connections)
     // UPDATES ALL USERS CONNECTIONS LIST
     io.emit('update-users', connections)
   })
@@ -31,5 +30,7 @@ module.exports = function (socket, io) {
     {room = Room.rooms[connections[socket.id].room]}
     if(typeof room != 'undefined'){room.userLeave(socket.id)}
     delete connections[socket.id]
+    // UPDATES ALL USERS CONNECTIONS LIST
+    io.emit('update-users', connections)
   });
 }

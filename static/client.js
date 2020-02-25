@@ -8,6 +8,10 @@ var menu_controls = document.getElementById('menu-controls');
 var display_online = document.getElementById('display-online');
 var socket = io();
 
+//
+//  AUTH
+//
+
 // LOGIN RESPONSES
 var err = document.getElementById('err');
 socket.on('response-login', (data)=>{authResponse(data)})
@@ -24,28 +28,39 @@ function authResponse(data){
   } else {err.innerHTML=data.message;}
 }
 
+// AUTH
+function login(){
+  var username = document.getElementById('login-username').value;
+  var password = document.getElementById('login-password').value;
+  socket.emit('login', {username: username, password: password, csrf_key:csrf});
+}
+
+function register(){
+  var username = document.getElementById('register-username').value;
+  var password1 = document.getElementById('register-password1').value;
+  var password2 = document.getElementById('register-password2').value;
+  if(password1==password2){
+    socket.emit('register', {username:username, password:password1, csrf_key:csrf});
+  }else{
+    console.log("Passwords dont match!")
+  }
+}
 // GET USERS
 socket.on('update-users', (connected)=>{
   console.log(connected)
+
   // REMOVE CURRENT LIST OF PLAYERS
   var child = display_online.lastElementChild;
   while(child){
     display_online.removeChild(child);
     child = display_online.lastElementChild;
   }
+
   // RECREATE LIST OF PLAYERS
-  for(socketid in connected){
+  for(id in connected){
+
     var node = document.createElement("LI");
-    var text = document.createTextNode(connected[socketid].user);
-    node.appendChild(text);
-
-    var link = document.createElement("A");
-    link.innerHTML="Start Chat"
-    link.href = "#"
-    link.addEventListener('click', ()=>{sendChat(connected[socket.id].id);});
-
-    node.appendChild(link);
-
+    node.innerHTML= connected[id].user+' <a href="#" onClick="sendChat(\''+connected[id].id+'\')">chat</a>'
     display_online.appendChild(node)
   }
 
@@ -56,9 +71,14 @@ function sendChat(id){
   socket.emit('chat-start', id);
 }
 
-socket.on('chat-created', function(data) {
+function startChat(socketid){socket.emit('chat-start', socketid);}
+
+socket.on('chat-started', function(data) {
   console.log(data);
 });
+var csrf = "TEST"
+
+
 
 // RESPONSE
 socket.on('response-room-created', function(data) {
