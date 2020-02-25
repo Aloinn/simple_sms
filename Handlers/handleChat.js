@@ -120,7 +120,7 @@ module.exports = function (socket, io) {
            User.pushField(user.model_id, 'group_chat', ObjectId(chat._id))
            userReconnect(id,room, false);
 
-           var _user = User.findOne({id: ObjectId(user.model_id)})
+           var _user = await User.findOne({id: ObjectId(user.model_id)})
                            .populate({path: 'group_chat', populate:{path: 'users', select: 'username', model:'User'}})
                            .populate({path: 'single_chat.user', select: 'username', model: 'User'})
                            .exec();
