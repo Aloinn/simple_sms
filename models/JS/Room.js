@@ -20,9 +20,15 @@ class Room{
     this.oldmessages = [];
     this.messages = [];
 
+    // GREET
+    var message = new Message_JS('Room created', this.id, "text");
+    this.oldmessages.push(message)
+
     // CHECK IF ROOM EXISTS
     this._id = chat_id
     this.load();
+
+
   }
 
   // USER JOINS ROOM
@@ -37,7 +43,6 @@ class Room{
       var chat = await Chat.findOne({_id: ObjectId(this._id)})
                 .populate({path: 'messages', model: 'Message'})
                 .exec();
-                console.log(chat)
       if (chat==undefined) throw 'Chat does not exist';
       for(var i in chat.messages){
         var message = chat.messages[i]
@@ -46,13 +51,13 @@ class Room{
         this.oldmessages.push(_message)
       }
     }catch(err){console.log('test',err);}
+
     app.io.in(this.id).emit('chat-started', {room:this});
   }
 
   async save(){
     try{
     async.eachSeries(this.messages, async (message)=>{
-      console.log(message)
       var _message = await Message.create({
         user: message.sender,
         content: message.content,
@@ -63,7 +68,7 @@ class Room{
       var chat =  Chat.findByIdAndUpdate(this._id,
                   {$push : { messages: ObjectId(_message._id)}},
                   {safe: true, upsert: true, new : true},
-                  function(err, model) {if(err)throw err;console.log("good");})
+                  function(err, model) {if(err)throw err;})
     })}catch(err){console.log(err)}
   }
   // USER LEAVES ROOM
@@ -80,7 +85,6 @@ class Room{
     // DELETES ROOM IF EMPTY OTHERWISE UPDATES
     if(this.users.length==0){
 
-      console.log('saving')
       // SAVE ROOM BEFORE DELETION
       await this.save();
       Room.roomRemove(this.id)

@@ -9,9 +9,6 @@ var async = require('async');
 
 
 module.exports = function (socket, io) {
-  test = {};
-  test['hey']=45
-  console.log(test);
 
   // CREATE A CHAT WITH USER (1-1)
   socket.on('chat-start', async (other, users)=>{
@@ -65,11 +62,9 @@ module.exports = function (socket, io) {
       // IF ROOM CURRENTLY EXISTS
       if(room){
         userReconnect(socket.id,room,true)
-        roomGreet(room);
       } else {
         // CREATES NEW ROOM AND CONNECTS USER
         var room = new Room(chat_id);
-        roomGreet(room);
         userReconnect(socket.id,room,false);
 
         // FIND THE OTHER USER THROUGH CONNECTED LIST THEN CONNECTS
@@ -91,9 +86,7 @@ module.exports = function (socket, io) {
     if(!room){
       late = false;
       room = new Room(chat_id);
-      roomGreet(room);
     }
-
 
     userReconnect(socket.id,room,late);
   })
@@ -112,7 +105,6 @@ module.exports = function (socket, io) {
     })
     chat_id = chat._id;
     var room = new Room(chat_id);
-    roomGreet(room);
     // CONNECT USERS
     async.each(user_list, (user)=>{
        // FIND USER THROUGH USERLIST
@@ -139,14 +131,11 @@ module.exports = function (socket, io) {
   })
 }
 
-// HELPER FUNCTIONS
-roomGreet = (room)=>{
-  // START
-  var message = new Message('Room created', room.id, "text");
-  room.oldmessages.push(message)
-}
-
 userReconnect = (socketid, room, late) =>{
+  if(typeof connections[socketid].room != 'undefined'){
+    var _rm = Room.rooms[connections[socketid].room];
+    _rm.userLeave(socketid);
+  }
   connections[socketid].room = room.id;
   room.userJoin(socketid);
   sockets[socketid].join(room.id);

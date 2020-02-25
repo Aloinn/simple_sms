@@ -61,11 +61,7 @@ function register(){
 socket.on('update-users', (connected)=>{
 
   // REMOVE CURRENT LIST OF PLAYERS
-  var child = display_online.lastElementChild;
-  while(child){
-    display_online.removeChild(child);
-    child = display_online.lastElementChild;
-  }
+  menuClear(display_online)
 
   // RECREATE LIST OF PLAYERS
   for(id in connected){
@@ -77,7 +73,6 @@ socket.on('update-users', (connected)=>{
       '\t \t<a href="#" onClick="addToChat(\''+connected[id].id+'\', \''+ connected[id].user+'\')">add to group</a>'
     }display_online.appendChild(node)
   }
-
 })
 
 // GET CHATS
@@ -115,11 +110,7 @@ function joinGroupChat(chat_id){
 
 function updateChats(){
   // REMOVE CURRENT LIST OF CHATS
-  var child = display_chatlist.lastElementChild;
-  while(child){
-    display_chats.removeChild(child);
-    child = display_chats.lastElementChild;
-  }
+  menuClear(display_chats);
 
   // ADD NODES FOR SINGLE CHATS
   for(user of app.user.single_chat){
@@ -146,11 +137,7 @@ function updateChats(){
 function updateGroupChatList(){
 
   // REMOVE CURRENT LIST OF CHATLIST PLAYERS
-  var child = display_chatlist.lastElementChild;
-  while(child){
-    display_chatlist.removeChild(child);
-    child = display_chatlist.lastElementChild;
-  }
+  menuClear(display_chatlist)
 
   // ADD ALL NODES
   for(i of app.chatlist){
@@ -166,6 +153,9 @@ socket.on('chat-started', (data)=>{
   var chat = data.room;
   app.room = chat.id;
   console.log(data)
+
+  // REMOVE CURRENT LIST OF CHATLIST PLAYERS
+  menuClear(chat_content)
 
   // LOAD OLD MESSAGES
   for(message of chat.oldmessages){
@@ -189,3 +179,12 @@ socket.on('chat-updated', (data)=>{
   node.innerHTML = message.sender+": "+message.content;
   chat_content.appendChild(node);
 })
+
+// REMOVE CURRENT LIST OF SOME MENU
+function menuClear(menu){
+  var child = menu.lastElementChild;
+  while(child){
+    menu.removeChild(child);
+    child = menu.lastElementChild;
+  }
+}
